@@ -54,9 +54,9 @@ class Cell {
     }
   }
 
-  visitedCell() {
+  visit() {
     this.visited = true
-    mazeCtx.fillStyle = "green"
+    mazeCtx.fillStyle = "red"
     mazeCtx.fillRect(this.xPosition + CELL_MARGIN, this.yPosition + CELL_MARGIN, 
       CELL_SIZE - CELL_MARGIN, CELL_SIZE - CELL_MARGIN)
   }
@@ -72,24 +72,24 @@ class Cell {
     // top
     if (this.y - 1 >= 0) {
       this.neighbors.push(grid[this.x + (this.y - 1) * NUM_CELLS])
-      grid[this.x + (this.y - 1) * NUM_CELLS].visitedCell()
     }
     // bottom
     if ((this.y + 1) < NUM_CELLS) {
       this.neighbors.push(grid[this.x + (this.y + 1) * NUM_CELLS])
-      grid[this.x + (this.y + 1) * NUM_CELLS].visitedCell()
     }
     // left
     if ((this.x - 1) >= 0) {
       this.neighbors.push(grid[(this.x - 1) + (this.y) * NUM_CELLS])
-      grid[(this.x - 1) + (this.y) * NUM_CELLS].visitedCell()
     }
     // right
     if ((this.x + 1) < NUM_CELLS) {
       this.neighbors.push(grid[(this.x + 1) + (this.y) * NUM_CELLS])
-      grid[(this.x + 1) + (this.y) * NUM_CELLS].visitedCell()
     }
   }
+
+  // removeWall(cur) {
+
+  // }
 }
 
 function constructMaze() {
@@ -106,4 +106,47 @@ function constructMaze() {
   }
 }
 
+async function traverse() {
+  console.log("step")
+  // visitedCells.add(cur)
+  cur.visit()
+  console.log(cur.neighbors)
+  cur = await getValidNeighbor(0, cur)
+  console.log(cur)
+  if (cur) {
+    setTimeout((traverse), 250)
+  }
+}
+
+async function getValidNeighbor(idx, cur) {
+  if (cur.neighbors.length === 0) {
+    return undefined
+  }
+  let validNeighbor = false
+
+  console.log("current: ", cur)
+  let next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
+  while (!validNeighbor && cur.neighbors.length > 0) {
+    if (next.visited === false) {
+      validNeighbor = true
+      cur.neighbors.splice(cur.neighbors.indexOf(next), 1)
+      next.neighbors.splice(next.neighbors.indexOf(cur), 1)
+    }
+    else {
+      cur.neighbors.splice(cur.neighbors.indexOf(next), 1)
+      next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
+    }
+  }
+  if (validNeighbor) {
+    return next
+  }
+  else {
+    console.log("QUIT")
+    return undefined
+  }
+}
+
 constructMaze()
+let cur = grid[0]
+const visitedCells = new Set()
+traverse()
