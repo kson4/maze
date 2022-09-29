@@ -6,13 +6,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Maze Algorithm</title>
   <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/maze.css">
+
+  <script src="https://kit.fontawesome.com/661ac17a3d.js" crossorigin="anonymous"></script>
 </head>
 <body>
+  <div class="navbar">
+    <ul>
+      <li class="navbar-title">Pathfinding - Maze</li>
+    </ul>
+    <div class="settings">
+      <i id="settings-icon" class="fa-solid fa-sliders fa-2xl"></i>
+    </div>
+  </div>
+  <div class="settings-menu">
+    <div class="settings-menu-title">Settings</div>
+    <p>Width:</p>
+    <input id="width-slider" class="slider" type="range", min="0", max="50", value="25">
+    <div class="selector">
+      <div class="selector-icon"><i class="fa-solid fa-circle-chevron-up"></i></div>
+    </div>
+    <p>Height:</p>
+    <input id="height-slider" class="slider" type="range", min="0", max="50", value="25">
+  </div>
   <div class="maze-container">
     <canvas id="maze"></canvas>
   </div>
-  
 
   <script src="./js/setup-maze.js"></script>
+  <script src="./js/script.js"></script>
 </body>
 </html>

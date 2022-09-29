@@ -4,7 +4,7 @@ const MAZE_WIDTH = 500
 const MAZE_HEIGHT = 500
 
 const CELL_SIZE = Math.floor(MAZE_WIDTH / NUM_CELLS)
-const TILE_COLOR = "gray"
+const TILE_COLOR = "lightgray"
 const TRAVERSE_COLOR = "blue"
 const GRID_COLOR = "white"
 
@@ -206,7 +206,4 @@ async function getValidNeighbor(idx, cur) {
 }
 
 constructMaze()
-let cur = grid[0]
-const visitedCells = new Set()
-
-traverse(grid[0])
+// traverse(grid[0])
