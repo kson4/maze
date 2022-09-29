@@ -35,10 +35,7 @@ class Cell {
 
   displayCell(color) {
     mazeCtx.fillStyle = color
-    // mazeCtx.fillRect(this.xPosition + CELL_MARGIN, this.yPosition + CELL_MARGIN, 
-    //   CELL_SIZE - CELL_MARGIN, CELL_SIZE - CELL_MARGIN)
-    mazeCtx.fillRect(this.xPosition, this.yPosition, 
-      CELL_SIZE, CELL_SIZE)
+    mazeCtx.fillRect(this.xPosition, this.yPosition, CELL_SIZE, CELL_SIZE)
   }
 
   displayWalls() {
@@ -93,84 +90,53 @@ class Cell {
   removeWall(next) {
     const xDist = this.x - next.x
     const yDist = this.y - next.y
-    console.log(xDist, yDist)
-
     // moved right
     if (xDist == -1) {
-      console.log("moved right")
       this.right = false
       next.left = false
-      console.log(this.top, this.right, this.bottom, this.left)
-      console.log(next.top, next.right, next.bottom, next.left)
       this.removeWallColor(this, "right")
       this.removeWallColor(next, "left")
     }
     // moved left
     if (xDist == 1) {
-      console.log("moved left")
       this.left = false
       next.right = false
-      console.log(this.top, this.right, this.bottom, this.left)
-      console.log(next.top, next.right, next.bottom, next.left)
       this.removeWallColor(this, "left")
       this.removeWallColor(next, "right")
     }
-
     //moved up
     if (yDist == 1) {
-      console.log("moved up")
       this.top = false
       next.bottom = false
-      console.log(this.top, this.right, this.bottom, this.left)
-      console.log(next.top, next.right, next.bottom, next.left)
       this.removeWallColor(this, "top")
       this.removeWallColor(next, "bottom")
     }
-
-
     // moved down
     if (yDist == -1) {
-      console.log("moved down")
       this.bottom = false
       next.top = false
-      console.log(this.top, this.right, this.bottom, this.left)
-      console.log(next.top, next.right, next.bottom, next.left)
       this.removeWallColor(this, "bottom")
       this.removeWallColor(next, "top")
     }
     
-    
-    // this.changeCellColor("blue")
-    
   }
   removeWallColor(tile, side) {
-    // // top
-    // mazeCtx.fillRect(this.xPosition, this.yPosition, 
-    //   CELL_SIZE, CELL_MARGIN)
-    // // bottom
-    // mazeCtx.fillRect(this.xPosition - CELL_MARGIN, 
-    //   this.yPosition + CELL_SIZE - CELL_MARGIN, CELL_SIZE, CELL_MARGIN)
-    // // left
-    // mazeCtx.fillRect(this.xPosition, this.yPosition,
-    //   CELL_MARGIN, CELL_SIZE)
-    // // right
-    // mazeCtx.fillRect(this.xPosition + CELL_SIZE - CELL_MARGIN, this.yPosition,
-    //   CELL_MARGIN, CELL_SIZE)
-
     mazeCtx.fillStyle = TRAVERSE_COLOR
     if (side === "top") {
-      mazeCtx.fillRect(tile.xPosition, tile.yPosition, CELL_SIZE, CELL_MARGIN)
+      mazeCtx.fillRect(tile.xPosition + CELL_MARGIN, tile.yPosition, 
+        CELL_SIZE - CELL_MARGIN, CELL_MARGIN)
     }
     else if (side === "bottom") {
-      mazeCtx.fillRect(tile.xPosition - CELL_MARGIN, tile.yPosition + CELL_SIZE - CELL_MARGIN, 
-        CELL_SIZE, CELL_MARGIN)
+      mazeCtx.fillRect(tile.xPosition + CELL_MARGIN, tile.yPosition + CELL_SIZE + CELL_MARGIN, 
+        CELL_SIZE - CELL_MARGIN, CELL_MARGIN)
     }
     else if (side === "left") {
-      mazeCtx.fillRect(tile.xPosition, tile.yPosition, CELL_MARGIN, CELL_SIZE)
+      mazeCtx.fillRect(tile.xPosition, tile.yPosition + CELL_MARGIN,
+         CELL_MARGIN, CELL_SIZE - CELL_MARGIN)
     }
     else {
-      mazeCtx.fillRect(tile.xPosition + CELL_SIZE - CELL_MARGIN, tile.yPosition,
-        CELL_MARGIN, CELL_SIZE)
+      mazeCtx.fillRect(tile.xPosition + CELL_SIZE - CELL_MARGIN, tile.yPosition + CELL_MARGIN,
+        CELL_MARGIN, CELL_SIZE - CELL_MARGIN)
     }
   }
 }
@@ -236,5 +202,3 @@ let cur = grid[0]
 const visitedCells = new Set()
 
 traverse(grid[0])
-
-// traverse()
