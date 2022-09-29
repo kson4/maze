@@ -1,9 +1,13 @@
+import { setRows } from "./script.js"
+
 const CELL_MARGIN = 1
-const NUM_CELLS = 50
+// const NUM_CELLS = 25
+let NUM_CELLS = 25
 const MAZE_WIDTH = 500
 const MAZE_HEIGHT = 500
 
-const CELL_SIZE = Math.floor(MAZE_WIDTH / NUM_CELLS)
+// const CELL_SIZE = Math.floor(MAZE_WIDTH / NUM_CELLS)
+let CELL_SIZE = Math.floor(MAZE_WIDTH / NUM_CELLS)
 const TILE_COLOR = "lightgray"
 const TRAVERSE_COLOR = "blue"
 const GRID_COLOR = "white"
@@ -15,9 +19,10 @@ maze.width = MAZE_WIDTH
 maze.height = MAZE_HEIGHT
 const mazeCtx = maze.getContext("2d")
 
-const grid = []
+export const grid = []
 const stack = []
 let currentCell = null
+
 
 class Cell {
   constructor(x, y) {
@@ -68,22 +73,22 @@ class Cell {
       CELL_SIZE - CELL_MARGIN, CELL_SIZE - CELL_MARGIN)
   }
 
-  getNeighbors() {
+  async getNeighbors(NUM_ROWS, NUM_COLS) {
     // top
     if (this.y - 1 >= 0) {
-      this.neighbors.push(grid[this.x + (this.y - 1) * NUM_CELLS])
+      this.neighbors.push(grid[this.x + (this.y - 1) * NUM_ROWS])
     }
     // bottom
-    if ((this.y + 1) < NUM_CELLS) {
-      this.neighbors.push(grid[this.x + (this.y + 1) * NUM_CELLS])
+    if ((this.y + 1) < NUM_COLS) {
+      this.neighbors.push(grid[this.x + (this.y + 1) * NUM_ROWS])
     }
     // left
     if ((this.x - 1) >= 0) {
-      this.neighbors.push(grid[(this.x - 1) + (this.y) * NUM_CELLS])
+      this.neighbors.push(grid[(this.x - 1) + (this.y) * NUM_ROWS])
     }
     // right
-    if ((this.x + 1) < NUM_CELLS) {
-      this.neighbors.push(grid[(this.x + 1) + (this.y) * NUM_CELLS])
+    if ((this.x + 1) < NUM_ROWS) {
+      this.neighbors.push(grid[(this.x + 1) + (this.y) * NUM_ROWS])
     }
   }
 
@@ -141,27 +146,53 @@ class Cell {
   }
 }
 
-function constructMaze() {
-  for (let i = 0; i < NUM_CELLS; i++) {
-    for (let j = 0; j < NUM_CELLS; j++) {
+async function getNeighbors(grid, NUM_ROWS, NUM_COLS) {
+  for (let i = 0; i < grid.length; i++) {
+    // top
+    if (grid[i].y - 1 >= 0) {
+      grid[i].neighbors.push(grid[grid[i].x + (grid[i].y - 1) * NUM_ROWS])
+    }
+    // bottom
+    if ((grid[i].y + 1) < NUM_COLS) {
+      grid[i].neighbors.push(grid[grid[i].x + (grid[i].y + 1) * NUM_ROWS])
+    }
+    // left
+    if ((grid[i].x - 1) >= 0) {
+      grid[i].neighbors.push(grid[(grid[i].x - 1) + (grid[i].y) * NUM_ROWS])
+    }
+    // right
+    if ((grid[i].x + 1) < NUM_ROWS) {
+      grid[i].neighbors.push(grid[(grid[i].x + 1) + (grid[i].y) * NUM_ROWS])
+    }
+  }
+}
+
+export function constructMaze(NUM_ROWS, NUM_COLS) {
+  NUM_CELLS = NUM_ROWS * NUM_COLS
+  CELL_SIZE = Math.floor(MAZE_WIDTH / NUM_ROWS)
+  for (let i = 0; i < NUM_COLS; i++) {
+    for (let j = 0; j < NUM_ROWS; j++) {
       const cell = new Cell(j, i)
       cell.displayCell(TILE_COLOR)
       cell.displayWalls()
+      
       grid.push(cell)
     }
   }
   for (let i = 0; i < grid.length; i++) {
-    grid[i].getNeighbors()
+    grid[i].getNeighbors(NUM_ROWS, NUM_COLS)
   }
+  traverse(grid[0])
 }
 
-async function traverse(previous) {
+export async function traverse(previous) {
   if (!previous) {
     return
   }
-  cur = previous
+  let cur = previous
   cur.visit()
-  next = await getValidNeighbor(0, cur)
+  console.log("before getting new: ", cur)
+  let next = await getValidNeighbor(0, cur)
   setTimeout(() => {
     if (cur) {
       cur.changeCellColor(TRAVERSE_COLOR)
@@ -180,7 +211,8 @@ async function traverse(previous) {
       }
       traverse(stack.pop())
     }
-  }, SPEED)
+  // }, SPEED)
+  }, 10)
 }
 
 async function getValidNeighbor(idx, cur) {
@@ -188,8 +220,6 @@ async function getValidNeighbor(idx, cur) {
     return undefined
   }
   let validNeighbor = false
-
-  // console.log("current: ", cur)
   let next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
   while (!validNeighbor && cur.neighbors.length > 0) {
     if (next.visited === false) {
@@ -204,6 +234,3 @@ async function getValidNeighbor(idx, cur) {
   }
   return validNeighbor ? next : undefined
 }
-
-constructMaze()
-// traverse(grid[0])

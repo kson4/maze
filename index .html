@@ -20,6 +20,12 @@
       <i id="settings-icon" class="fa-solid fa-sliders fa-2xl"></i>
     </div>
   </div>
+  <div class="screen-container">
+    <div class="maze-container">
+      <canvas id="maze"></canvas>
+    </div>
+  </div>
+
   <div class="settings-menu">
     <div class="settings-menu-title">Settings</div>
     <div class="option">
@@ -27,30 +33,25 @@
         <span>Rows: </span>
         <input type="number" class="value" value="25">
       </div>
-      <!-- <span class="option-text">Rows: <input type="number" class="value" value="25"></span> -->
-      
       <div class="slider-container">
         <input id="rows-slider" class="slider" type="range", min="10", max="50", value="25">
       </div>
     </div>
-    
+
     <div class="option">
       <div class="option-text">
         <span>Cols: </span>
         <input type="number" class="value" value="25">
       </div>
-      <!-- <span class="option-text">Cols: <input type="number" class="value" value="25"></span> -->
-      
       <div class="slider-container">
         <input id="cols-slider" class="slider" type="range", min="10", max="50", value="25">
       </div>
     </div>
+    
+    <input type="submit" class="submit">
   </div>
-  <div class="maze-container">
-    <canvas id="maze"></canvas>
-  </div>
-
-  <script src="./js/script.js"></script>
-  <script src="./js/setup-maze.js"></script>
+  <script src="./js/script.js" type="module"></script>
+  <script src="./js/setup-maze.js" type="module"></script>
+  
 </body>
 </html>
