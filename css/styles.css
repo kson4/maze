@@ -5,8 +5,17 @@
 }
 
 .navbar {
-  border: 1px solid red;
   padding: 2%;
+}
+.navbar-list {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
+}
+ul {
+  list-style: none;
+}
+li {
+  width: 200px;
+  text-align: center;
 }

@@ -1,5 +1,3 @@
-import { setRows } from "./script.js"
-
 const CELL_MARGIN = 1
 // const NUM_CELLS = 25
 let NUM_CELLS = 25
@@ -23,6 +21,92 @@ export const grid = []
 const stack = []
 let currentCell = null
 
+export class Grid {
+  constructor(rows, cols) {
+    this.rows = rows
+    this.cols = cols
+    this.mazeWidth = 500
+    this.mazeHeight = 500
+    this.cellMargin = 1
+    this.numCells = this.rows * this.cols
+    this.cellSize = Math.floor(this.mazeWidth / this.numCells)
+    this.tileColor = "lightgray"
+    this.traverseColor = "blue"
+    this.gridColor = "white"
+    this.speed = 1
+    this.maze = document.querySelector("#maze")
+    this.mazeCtx = maze.getContext("2d")
+    this.grid = []
+    this.stack = []
+  }
+
+  constructMaze() {
+    console.log(this.grid)
+    for (let i = 0; i < this.cols; i++) {
+      for (let j = 0; j < this.rows; j++) {
+        const cell = new Cell(j, i)
+        cell.displayCell(this.tileColor)
+        cell.displayWalls()
+        this.grid.push(cell)
+      }
+    }
+    for (let i = 0; i < this.grid.length; i++) {
+      this.grid[i].getNeighbors(this.rows, this.cols, this.grid)
+      console.log(this.grid[i])
+    }
+    console.log(this.grid)
+  }
+
+  async traverse(previous) {
+    console.log(previous)
+    if (!previous) {
+      return
+    }
+    let cur = previous
+    cur.visit()
+    let next = cur.getValidNeighbor(0, cur)
+    setTimeout(() => {
+      if (cur) {
+        cur.changeCellColor(TRAVERSE_COLOR)
+      }
+      if (next) {
+        if (cur.neighbors.length > 0) {
+          this.stack.push(cur)
+        }
+        cur.removeWall(next)
+        this.traverse(next)
+      }
+      else {
+        while (this.stack.length > 0 && this.stack[this.stack.length - 1].neighbors.length == 0) {
+          this.stack.pop()
+        }
+        this.traverse(this.stack.pop())
+      }
+    // }, SPEED)
+    }, 10)
+  }
+
+  // async getValidNeighbor(idx, cur) {
+  //   if (cur.neighbors.length === 0) {
+  //     return undefined
+  //   }
+  //   let validNeighbor = false
+  //   let next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
+  //   console.log(next)
+  //   while (!validNeighbor && cur.neighbors.length > 0) {
+  //     if (next.visited === false) {
+  //       validNeighbor = true
+  //       cur.neighbors.splice(cur.neighbors.indexOf(next), 1)
+  //       next.neighbors.splice(next.neighbors.indexOf(cur), 1)
+  //     }
+  //     else {
+  //       cur.neighbors.splice(cur.neighbors.indexOf(next), 1)
+  //       next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
+  //     }
+  //   }
+  //   return validNeighbor ? next : undefined
+  // }
+}
 
 class Cell {
   constructor(x, y) {
@@ -73,22 +157,22 @@ class Cell {
       CELL_SIZE - CELL_MARGIN, CELL_SIZE - CELL_MARGIN)
   }
 
-  async getNeighbors(NUM_ROWS, NUM_COLS) {
+  getNeighbors(rows, cols, grid) {
     // top
     if (this.y - 1 >= 0) {
-      this.neighbors.push(grid[this.x + (this.y - 1) * NUM_ROWS])
+      this.neighbors.push(grid[this.x + (this.y - 1) * rows])
     }
     // bottom
-    if ((this.y + 1) < NUM_COLS) {
-      this.neighbors.push(grid[this.x + (this.y + 1) * NUM_ROWS])
+    if ((this.y + 1) < cols) {
+      this.neighbors.push(grid[this.x + (this.y + 1) * rows])
     }
     // left
     if ((this.x - 1) >= 0) {
-      this.neighbors.push(grid[(this.x - 1) + (this.y) * NUM_ROWS])
+      this.neighbors.push(grid[(this.x - 1) + (this.y) * rows])
     }
     // right
-    if ((this.x + 1) < NUM_ROWS) {
-      this.neighbors.push(grid[(this.x + 1) + (this.y) * NUM_ROWS])
+    if ((this.x + 1) < rows) {
+      this.neighbors.push(grid[(this.x + 1) + (this.y) * rows])
     }
   }
 
@@ -144,93 +228,24 @@ class Cell {
         CELL_MARGIN, CELL_SIZE - CELL_MARGIN)
     }
   }
-}
 
-async function getNeighbors(grid, NUM_ROWS, NUM_COLS) {
-  for (let i = 0; i < grid.length; i++) {
-    // top
-    if (grid[i].y - 1 >= 0) {
-      grid[i].neighbors.push(grid[grid[i].x + (grid[i].y - 1) * NUM_ROWS])
+  getValidNeighbor(idx, cur) {
+    if (cur.neighbors.length === 0) {
+      return undefined
     }
-    // bottom
-    if ((grid[i].y + 1) < NUM_COLS) {
-      grid[i].neighbors.push(grid[grid[i].x + (grid[i].y + 1) * NUM_ROWS])
-    }
-    // left
-    if ((grid[i].x - 1) >= 0) {
-      grid[i].neighbors.push(grid[(grid[i].x - 1) + (grid[i].y) * NUM_ROWS])
-    }
-    // right
-    if ((grid[i].x + 1) < NUM_ROWS) {
-      grid[i].neighbors.push(grid[(grid[i].x + 1) + (grid[i].y) * NUM_ROWS])
-    }
-  }
-}
-
-export function constructMaze(NUM_ROWS, NUM_COLS) {
-  NUM_CELLS = NUM_ROWS * NUM_COLS
-  CELL_SIZE = Math.floor(MAZE_WIDTH / NUM_ROWS)
-  for (let i = 0; i < NUM_COLS; i++) {
-    for (let j = 0; j < NUM_ROWS; j++) {
-      const cell = new Cell(j, i)
-      cell.displayCell(TILE_COLOR)
-      cell.displayWalls()
-      
-      grid.push(cell)
-    }
-  }
-  for (let i = 0; i < grid.length; i++) {
-    grid[i].getNeighbors(NUM_ROWS, NUM_COLS)
-  }
-  traverse(grid[0])
-}
-
-export async function traverse(previous) {
-  if (!previous) {
-    return
-  }
-  let cur = previous
-  cur.visit()
-  console.log("before getting new: ", cur)
-  let next = await getValidNeighbor(0, cur)
-  setTimeout(() => {
-    if (cur) {
-      cur.changeCellColor(TRAVERSE_COLOR)
-    }
-    if (next) {
-      if (cur.neighbors.length > 0) {
-        stack.push(cur)
+    let validNeighbor = false
+    let next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
+    while (!validNeighbor && cur.neighbors.length > 0) {
+      if (next.visited === false) {
+        validNeighbor = true
+        cur.neighbors.splice(cur.neighbors.indexOf(next), 1)
+        next.neighbors.splice(next.neighbors.indexOf(cur), 1)
       }
-      cur.removeWall(next)
-      traverse(next)
-    }
-    else {
-      console.log(stack)
-      while (stack.length > 0 && stack[stack.length - 1].neighbors.length == 0) {
-        stack.pop()
+      else {
+        cur.neighbors.splice(cur.neighbors.indexOf(next), 1)
+        next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
       }
-      traverse(stack.pop())
     }
-  // }, SPEED)
-  }, 10)
-}
-
-async function getValidNeighbor(idx, cur) {
-  if (cur.neighbors.length === 0) {
-    return undefined
+    return validNeighbor ? next : undefined
   }
-  let validNeighbor = false
-  let next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
-  while (!validNeighbor && cur.neighbors.length > 0) {
-    if (next.visited === false) {
-      validNeighbor = true
-      cur.neighbors.splice(cur.neighbors.indexOf(next), 1)
-      next.neighbors.splice(next.neighbors.indexOf(cur), 1)
-    }
-    else {
-      cur.neighbors.splice(cur.neighbors.indexOf(next), 1)
-      next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
-    }
-  }
-  return validNeighbor ? next : undefined
 }

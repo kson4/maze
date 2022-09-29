@@ -1,4 +1,4 @@
-import { constructMaze, traverse, grid } from "./setup-maze.js"
+import { Grid } from "./setup-maze.js"
 
 window.onload = function() {
   document.querySelector(".settings-menu").classList.add("visible")
@@ -16,9 +16,14 @@ function closeSettings() {
   document.querySelector(".maze-container").classList.remove("inactive")
 }
 
+//nav bar
+document.querySelector("#start").addEventListener("click", () => {
+  traverse(grid[0])
+})
+
 // settings
 const sliders = document.querySelectorAll(".slider")
-let values = document.querySelectorAll(".value")
+const values = document.querySelectorAll(".value")
 for (let i = 0; i < sliders.length; i++) {
   values[i].textContent = sliders[i].value
 }
@@ -32,10 +37,13 @@ for (let i = 0; i < sliders.length; i++) {
   })
 }
 
-document.querySelector(".submit").addEventListener("click", setRows)
+let mazeGrid
 
-export async function setRows() {
-  constructMaze(values[0].value, values[1].value)
+document.querySelector(".submit").addEventListener("click", createNewGrid)
+export function createNewGrid() {
+  mazeGrid = new Grid(values[0].value, values[1].value)
+  mazeGrid.constructMaze()
+  mazeGrid.traverse(mazeGrid.grid[0])
+  console.log(mazeGrid.grid.length)
   closeSettings()
-  // traverse(grid[0])
 }

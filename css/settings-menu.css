@@ -1,19 +1,15 @@
-ul {
-  list-style: none;
-}
-
 .settings-menu {
   position: fixed;
   top: 40%;
   left: 50%;
-  /* transform: translate(-50%, -50%); */
+  transform: translate(-50%, -50%);
   width: 500px;
   height: 500px;
   font-size: 20px;
   border: 1px solid blue;
   visibility: hidden;
-  /* opacity: 0;
-  transition: 0.5s; */
+  opacity: 0;
+  /* transition: 0.5s; */
   z-index: 1;
 
   display: flex;
@@ -82,8 +78,20 @@ ul {
   display: flex;
   justify-content: space-between;
 }
+
 .value {
   width: 40px;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 .submit {
@@ -91,3 +99,4 @@ ul {
   width: 60px;
   margin: auto;
 }
+
