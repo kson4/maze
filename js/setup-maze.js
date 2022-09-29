@@ -1,17 +1,14 @@
 const CELL_MARGIN = 1
-const NUM_CELLS = 10
-// const MAZE_WIDTH = 400 - (NUM_CELLS - CELL_MARGIN)
-// const MAZE_HEIGHT = 400 - (NUM_CELLS - CELL_MARGIN)
-
-const MAZE_WIDTH = 400
-const MAZE_HEIGHT = 400
+const NUM_CELLS = 50
+const MAZE_WIDTH = 500
+const MAZE_HEIGHT = 500
 
 const CELL_SIZE = Math.floor(MAZE_WIDTH / NUM_CELLS)
 const TILE_COLOR = "gray"
 const TRAVERSE_COLOR = "blue"
 const GRID_COLOR = "white"
 
-const SPEED = 100
+const SPEED = 1
 
 const maze = document.querySelector("#maze")
 maze.width = MAZE_WIDTH
@@ -101,7 +98,7 @@ class Cell {
       this.removeWallColor(next, "left")
     }
     // moved left
-    if (xDist == 1) {
+    else if (xDist == 1) {
       this.left = false
       next.right = false
       this.removeWallColor(this, "left")
@@ -115,7 +112,7 @@ class Cell {
       this.removeWallColor(next, "bottom")
     }
     // moved down
-    if (yDist == -1) {
+    else if (yDist == -1) {
       this.bottom = false
       next.top = false
       this.removeWallColor(this, "bottom")
@@ -159,14 +156,16 @@ function constructMaze() {
 }
 
 async function traverse(previous) {
-  cur = previous
-  if (cur) {
-    cur.visit()
+  if (!previous) {
+    return
   }
-
-  let next = await getValidNeighbor(0, cur)
+  cur = previous
+  cur.visit()
+  next = await getValidNeighbor(0, cur)
   setTimeout(() => {
-    cur.changeCellColor(TRAVERSE_COLOR)
+    if (cur) {
+      cur.changeCellColor(TRAVERSE_COLOR)
+    }
     if (next) {
       if (cur.neighbors.length > 0) {
         stack.push(cur)
@@ -204,12 +203,6 @@ async function getValidNeighbor(idx, cur) {
     }
   }
   return validNeighbor ? next : undefined
-  if (validNeighbor) {
-    return next
-  }
-  else {
-    return undefined
-  }
 }
 
 constructMaze()
