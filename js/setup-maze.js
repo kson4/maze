@@ -11,12 +11,15 @@ const TILE_COLOR = "gray"
 const TRAVERSE_COLOR = "blue"
 const GRID_COLOR = "white"
 
+const SPEED = 100
+
 const maze = document.querySelector("#maze")
 maze.width = MAZE_WIDTH
 maze.height = MAZE_HEIGHT
 const mazeCtx = maze.getContext("2d")
 
 const grid = []
+const stack = []
 let currentCell = null
 
 class Cell {
@@ -56,7 +59,7 @@ class Cell {
 
   visit() {
     this.visited = true
-    mazeCtx.fillStyle = "blue"
+    mazeCtx.fillStyle = "red"
     mazeCtx.fillRect(this.xPosition + CELL_MARGIN, this.yPosition + CELL_MARGIN, 
       CELL_SIZE - CELL_MARGIN, CELL_SIZE - CELL_MARGIN)
   }
@@ -157,15 +160,28 @@ function constructMaze() {
 
 async function traverse(previous) {
   cur = previous
-  cur.visit()
+  if (cur) {
+    cur.visit()
+  }
 
   let next = await getValidNeighbor(0, cur)
   setTimeout(() => {
+    cur.changeCellColor(TRAVERSE_COLOR)
     if (next) {
+      if (cur.neighbors.length > 0) {
+        stack.push(cur)
+      }
       cur.removeWall(next)
       traverse(next)
     }
-  }, 500)
+    else {
+      console.log(stack)
+      while (stack.length > 0 && stack[stack.length - 1].neighbors.length == 0) {
+        stack.pop()
+      }
+      traverse(stack.pop())
+    }
+  }, SPEED)
 }
 
 async function getValidNeighbor(idx, cur) {
@@ -187,12 +203,11 @@ async function getValidNeighbor(idx, cur) {
       next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
     }
   }
+  return validNeighbor ? next : undefined
   if (validNeighbor) {
-    // console.log(next)
     return next
   }
   else {
-    console.log("QUIT")
     return undefined
   }
 }
