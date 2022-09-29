@@ -7,6 +7,7 @@
   <title>Maze Algorithm</title>
   <link rel="stylesheet" href="./css/styles.css">
   <link rel="stylesheet" href="./css/maze.css">
+  <link rel="stylesheet" href="./css/settings-menu.css">
 
   <script src="https://kit.fontawesome.com/661ac17a3d.js" crossorigin="anonymous"></script>
 </head>
@@ -21,19 +22,35 @@
   </div>
   <div class="settings-menu">
     <div class="settings-menu-title">Settings</div>
-    <p>Width:</p>
-    <input id="width-slider" class="slider" type="range", min="0", max="50", value="25">
-    <div class="selector">
-      <div class="selector-icon"><i class="fa-solid fa-circle-chevron-up"></i></div>
+    <div class="option">
+      <div class="option-text">
+        <span>Rows: </span>
+        <input type="number" class="value" value="25">
+      </div>
+      <!-- <span class="option-text">Rows: <input type="number" class="value" value="25"></span> -->
+      
+      <div class="slider-container">
+        <input id="rows-slider" class="slider" type="range", min="10", max="50", value="25">
+      </div>
     </div>
-    <p>Height:</p>
-    <input id="height-slider" class="slider" type="range", min="0", max="50", value="25">
+    
+    <div class="option">
+      <div class="option-text">
+        <span>Cols: </span>
+        <input type="number" class="value" value="25">
+      </div>
+      <!-- <span class="option-text">Cols: <input type="number" class="value" value="25"></span> -->
+      
+      <div class="slider-container">
+        <input id="cols-slider" class="slider" type="range", min="10", max="50", value="25">
+      </div>
+    </div>
   </div>
   <div class="maze-container">
     <canvas id="maze"></canvas>
   </div>
 
-  <script src="./js/setup-maze.js"></script>
   <script src="./js/script.js"></script>
+  <script src="./js/setup-maze.js"></script>
 </body>
 </html>
