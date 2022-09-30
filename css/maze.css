@@ -1,13 +1,14 @@
 .maze-container {
-  position: relative;
-
+  width: 100vw;
+  height: 85vh;
+  /* position: relative; */
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
 }
 
 #maze {
-  width: 90%;
-  height: 90%;
+  width: 95%;
+  height: 95%;
   /* margin-bottom: 5%; */
 }

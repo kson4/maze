@@ -19,17 +19,21 @@ function closeSettings() {
 let mazeGrid
 
 //nav bar
-document.querySelector("#start").addEventListener("click", () => {
-  // mazeGrid.dfs(mazeGrid.grid[0])
+document.querySelector("#bfs").addEventListener("click", () => {
+  mazeGrid.dfs(mazeGrid.grid[0])
+})
+document.querySelector("#prims").addEventListener("click", () => {
   const cell = mazeGrid.grid[Math.floor(Math.random() * mazeGrid.grid.length)]
   mazeGrid.grid.splice(mazeGrid.grid.indexOf(cell), 1)
   for (let i = 0; i < cell.neighbors.length; i++) {
     mazeGrid.wallList.push([cell, cell.neighbors[i]])
   }
   cell.visit()
-  console.log(mazeGrid.wallList)
-  console.log("STARTING FROM: ", cell)
   mazeGrid.prim()
+})
+document.querySelector("#generate").addEventListener("click", () => {
+  mazeGrid = new Grid(sliders[0].value, sliders[1].value)
+  mazeGrid.constructMaze()
 })
 
 // settings
@@ -59,5 +63,5 @@ export function createNewGrid() {
 }
 
 // mazeGrid = new Grid(values[0].value, values[1].value)
-mazeGrid = new Grid(25, 25)
+mazeGrid = new Grid(30, 20)
 mazeGrid.constructMaze()

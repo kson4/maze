@@ -53,18 +53,18 @@ export class Grid {
   }
 
   dfs(previous) {
+    numTraversals.textContent++
     if (!previous) {
       return
     }
     let cur = previous
+    
     cur.visit()
     cur.displayAvailableWalls()
     let next = cur.getValidNeighbor(0, cur)
+    
     setTimeout(() => {
-      numTraversals.textContent++
-      if (cur) {
-        cur.changeCellColor(TRAVERSE_COLOR)
-      }
+      cur.changeCellColor(TRAVERSE_COLOR)
       if (next) {
         if (cur.neighbors.length > 0) {
           this.stack.push(cur)
@@ -75,7 +75,6 @@ export class Grid {
       else {
         while (this.stack.length > 0 && this.stack[this.stack.length - 1].neighbors.length == 0) {
           this.stack.pop()
-          numTraversals.textContent++
         }
         this.dfs(this.stack.pop())
       }
@@ -83,6 +82,7 @@ export class Grid {
   }
 
   prim() {
+    numTraversals.textContent++
     if (this.wallList.length == 0) {
       return
     }
@@ -122,8 +122,6 @@ export class Grid {
         this.wallList.push([next, next.neighbors[i]])
       }
     }
-
-    console.log("LINE BREAK----------------------------------------------------------")
     setTimeout(() => {
       cur.changeCellColor(TRAVERSE_COLOR)
       next.changeCellColor(TRAVERSE_COLOR)

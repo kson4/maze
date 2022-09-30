@@ -17,6 +17,12 @@
   flex-direction: row;
   justify-content: space-between;
 }
+.navbar button {
+  width: 100px;
+  height: 50px;
+  border-radius: 10px;;
+  font-size: 20px;
+}
 ul {
   list-style: none;
 }
@@ -25,6 +31,9 @@ li {
   text-align: center;
 }
 
-/* .screen-container {
-  background-color: #DFF6FF;
-} */
+.screen-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

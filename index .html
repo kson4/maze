@@ -15,13 +15,16 @@
   <div class="navbar">
     <ul class="navbar-list">
       <li class="navbar-title">Pathfinding - Maze</li>
-      <li><button id="start">START!</button></li>
+      <!-- <li><button id="start">START!</button></li> -->
+      <li><button id="bfs">BFS</button></li>
+      <li><button id="prims">Prim's</button></li>
+      <li><button id="generate">Generate Maze</button></li>
       <li><i id="settings-icon" class="fa-solid fa-sliders fa-xl"></i></li>
     </ul>
   </div>
   <div class="screen-container">
     <div class="stats">
-      <p>Number of Cells Visited: <span class="num-traversal"></span></p>
+      <p>Number of Iterations: <span class="num-traversal"></span></p>
     </div>
     <div class="maze-container">
       <canvas id="maze"></canvas>
@@ -32,20 +35,20 @@
     <div class="option">
       <div class="option-text">
         <span>Rows: </span>
-        <input type="number" class="value" value="50">
+        <input type="number" class="value" value="30">
       </div>
       <div class="slider-container">
-        <input id="rows-slider" class="slider" type="range", min="10", max="100", value="50">
+        <input id="rows-slider" class="slider" type="range", min="10", max="100", value="30">
       </div>
     </div>
 
     <div class="option">
       <div class="option-text">
         <span>Columns: </span>
-        <input type="number" class="value" value="50">
+        <input type="number" class="value" value="20">
       </div>
       <div class="slider-container">
-        <input id="cols-slider" class="slider" type="range", min="10", max="100", value="50">
+        <input id="cols-slider" class="slider" type="range", min="10", max="100", value="20">
       </div>
     </div>
     <input type="submit" class="submit">
