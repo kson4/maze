@@ -20,7 +20,7 @@ let mazeGrid
 
 //nav bar
 document.querySelector("#start").addEventListener("click", () => {
-  mazeGrid.traverse(mazeGrid.grid[0])
+  mazeGrid.dfs(mazeGrid.grid[0])
 })
 
 // settings
@@ -49,5 +49,6 @@ export function createNewGrid() {
   closeSettings()
 }
 
-mazeGrid = new Grid(values[0].value, values[1].value)
+// mazeGrid = new Grid(values[0].value, values[1].value)
+mazeGrid = new Grid(3, 3)
 mazeGrid.constructMaze()

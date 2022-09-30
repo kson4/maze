@@ -1,38 +1,43 @@
-const TILE_COLOR = "lightgray"
-const TRAVERSE_COLOR = "blue"
-const GRID_COLOR = "white"
+const TILE_COLOR = "white"
+const TRAVERSE_COLOR = "green"
 const BACKGROUND_COLOR = `#DFF6FF`;
+const INITIAL_WALL_COLOR = "gray"
+const VISITED_WALL_COLOR = "black"
 
-const SPEED = 1
+const SPEED = 10
 
 const maze = document.querySelector("#maze")
-const MAZE_WIDTH = 500
-const MAZE_HEIGHT = 500
+const MAZE_WIDTH = 1000
+const MAZE_HEIGHT = 1000
 const CELL_MARGIN = 1;
 maze.width = MAZE_WIDTH
 maze.height = MAZE_HEIGHT
 const mazeCtx = maze.getContext("2d")
+mazeCtx.imageSmoothingEnabled = false;
 
+const numTraversals = document.querySelector(".num-traversal")
+numTraversals.textContent = "0"
+
+let counter = 0
 
 export class Grid {
   constructor(rows, cols) {
     this.rows = rows
     this.cols = cols
-    this.mazeWidth = 500
-    this.mazeHeight = 500
+    this.mazeWidth = 1000
+    this.mazeHeight = 1000
     this.cellMargin = 1
     this.rowSize = Math.floor(this.mazeWidth / this.rows)
     this.colSize = Math.floor(this.mazeHeight / this.cols)
-    this.tileColor = "gray"
-    this.traverseColor = "blue"
-    this.gridColor = "white"
+    this.tileColor = "white"
+    this.traverseColor = "green"
+    this.gridColor = "#FFF"
     this.speed = 1
     this.grid = []
     this.stack = []
   }
 
   constructMaze() {
-    console.log(this.rowSize)
     for (let i = 0; i < this.cols; i++) {
       for (let j = 0; j < this.rows; j++) {
         const cell = new Cell(j, i, this.rowSize, this.colSize)
@@ -46,15 +51,17 @@ export class Grid {
     }
   }
 
-  traverse(previous) {
-    console.log(previous)
+  dfs(previous) {
     if (!previous) {
       return
     }
     let cur = previous
+    console.log(cur.top, cur.right, cur.bottom, cur.left)
     cur.visit()
     let next = cur.getValidNeighbor(0, cur)
+    cur.displayAvailableWalls()
     setTimeout(() => {
+      numTraversals.textContent++
       if (cur) {
         cur.changeCellColor(TRAVERSE_COLOR)
       }
@@ -63,16 +70,16 @@ export class Grid {
           this.stack.push(cur)
         }
         cur.removeWall(next)
-        this.traverse(next)
+        this.dfs(next)
       }
       else {
         while (this.stack.length > 0 && this.stack[this.stack.length - 1].neighbors.length == 0) {
           this.stack.pop()
+          numTraversals.textContent++
         }
-        this.traverse(this.stack.pop())
+        this.dfs(this.stack.pop())
       }
-    // }, SPEED)
-    }, 100)
+    }, SPEED)
   }
 
   reset() {
@@ -99,14 +106,15 @@ class Cell {
 
   displayCell(color) {
     mazeCtx.fillStyle = color
-    mazeCtx.fillRect(this.xPosition, this.yPosition, this.rowSize, this.colSize)
+    mazeCtx.fillRect(this.xPosition, this.yPosition, 
+      this.rowSize + 10, this.colSize + 2)
   }
 
   displayWalls() {
-    mazeCtx.fillStyle = GRID_COLOR
-
+    mazeCtx.fillStyle = INITIAL_WALL_COLOR
     // top
-    mazeCtx.fillRect(this.xPosition, this.yPosition, this.rowSize, CELL_MARGIN)
+    mazeCtx.fillRect(this.xPosition, this.yPosition, 
+      this.rowSize + 2, CELL_MARGIN)
     // bottom
     mazeCtx.fillRect(this.xPosition, this.yPosition + this.colSize - CELL_MARGIN, 
       this.rowSize, CELL_MARGIN)
@@ -182,7 +190,6 @@ class Cell {
       this.removeWallColor(this, "bottom")
       this.removeWallColor(next, "top")
     }
-    
   }
   removeWallColor(tile, side) {
     mazeCtx.fillStyle = TRAVERSE_COLOR
@@ -201,6 +208,21 @@ class Cell {
     else {
       mazeCtx.fillRect(tile.xPosition + this.rowSize - CELL_MARGIN, tile.yPosition + CELL_MARGIN,
         CELL_MARGIN, this.colSize - CELL_MARGIN)
+    }
+  }
+  displayAvailableWalls() {
+    mazeCtx.fillStyle = VISITED_WALL_COLOR
+    if (this.top) {
+      mazeCtx.fillRect(this.xPosition, this.yPosition, this.rowSize, CELL_MARGIN)
+    }
+    if (this.bottom) {
+      mazeCtx.fillRect(this.xPosition, this.yPosition + this.colSize, this.rowSize, CELL_MARGIN)
+    }
+    if (this.left) {
+      mazeCtx.fillRect(this.xPosition, this.yPosition, CELL_MARGIN, this.colSize)
+    }
+    if (this.right) {
+      mazeCtx.fillRect(this.xPosition + this.rowSize, this.yPosition, CELL_MARGIN, this.colSize)
     }
   }
 
