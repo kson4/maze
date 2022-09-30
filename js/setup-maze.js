@@ -35,6 +35,7 @@ export class Grid {
     this.speed = 1
     this.grid = []
     this.stack = []
+    this.wallList = []
   }
 
   constructMaze() {
@@ -56,10 +57,9 @@ export class Grid {
       return
     }
     let cur = previous
-    console.log(cur.top, cur.right, cur.bottom, cur.left)
     cur.visit()
-    let next = cur.getValidNeighbor(0, cur)
     cur.displayAvailableWalls()
+    let next = cur.getValidNeighbor(0, cur)
     setTimeout(() => {
       numTraversals.textContent++
       if (cur) {
@@ -80,6 +80,55 @@ export class Grid {
         this.dfs(this.stack.pop())
       }
     }, SPEED)
+  }
+
+  prim() {
+    if (this.wallList.length == 0) {
+      return
+    }
+
+    let foundValidCell = false
+    let idx
+    while (!foundValidCell) {
+      if (this.wallList.length == 0) {
+        return
+      }
+      idx = Math.floor(Math.random() * this.wallList.length)
+      if (!this.wallList[idx][1].visited) {
+        foundValidCell = true
+      }
+      else {
+        this.wallList.splice(idx, 1)
+      }
+    }
+    const cur = this.wallList[idx][0]
+
+    for (let i = 0; i < cur.neighbors.length; i++) {
+      if (cur.neighbors[i].visited) {
+        this.wallList.push([cur, cur.neighbors[i]])
+      }
+    }
+    const next = this.wallList[idx][1]
+    this.wallList.splice(idx, 1)
+    cur.visit()
+    next.visit()
+    cur.removeWall(next)
+    cur.displayAvailableWalls()
+    next.displayAvailableWalls()
+
+    for (let i = 0; i < next.neighbors.length; i++) {
+      if (!next.neighbors[i].visited) {
+        next.neighbors[i].changeCellColor("gray")
+        this.wallList.push([next, next.neighbors[i]])
+      }
+    }
+
+    console.log("LINE BREAK----------------------------------------------------------")
+    setTimeout(() => {
+      cur.changeCellColor(TRAVERSE_COLOR)
+      next.changeCellColor(TRAVERSE_COLOR)
+      this.prim()
+    }, 10)
   }
 
   reset() {

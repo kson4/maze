@@ -20,7 +20,16 @@ let mazeGrid
 
 //nav bar
 document.querySelector("#start").addEventListener("click", () => {
-  mazeGrid.dfs(mazeGrid.grid[0])
+  // mazeGrid.dfs(mazeGrid.grid[0])
+  const cell = mazeGrid.grid[Math.floor(Math.random() * mazeGrid.grid.length)]
+  mazeGrid.grid.splice(mazeGrid.grid.indexOf(cell), 1)
+  for (let i = 0; i < cell.neighbors.length; i++) {
+    mazeGrid.wallList.push([cell, cell.neighbors[i]])
+  }
+  cell.visit()
+  console.log(mazeGrid.wallList)
+  console.log("STARTING FROM: ", cell)
+  mazeGrid.prim()
 })
 
 // settings
@@ -50,5 +59,5 @@ export function createNewGrid() {
 }
 
 // mazeGrid = new Grid(values[0].value, values[1].value)
-mazeGrid = new Grid(3, 3)
+mazeGrid = new Grid(25, 25)
 mazeGrid.constructMaze()
