@@ -1,25 +1,18 @@
-const CELL_MARGIN = 1
-// const NUM_CELLS = 25
-let NUM_CELLS = 25
-const MAZE_WIDTH = 500
-const MAZE_HEIGHT = 500
-
-// const CELL_SIZE = Math.floor(MAZE_WIDTH / NUM_CELLS)
-let CELL_SIZE = Math.floor(MAZE_WIDTH / NUM_CELLS)
 const TILE_COLOR = "lightgray"
 const TRAVERSE_COLOR = "blue"
 const GRID_COLOR = "white"
+const BACKGROUND_COLOR = `#DFF6FF`;
 
 const SPEED = 1
 
 const maze = document.querySelector("#maze")
+const MAZE_WIDTH = 500
+const MAZE_HEIGHT = 500
+const CELL_MARGIN = 1;
 maze.width = MAZE_WIDTH
 maze.height = MAZE_HEIGHT
 const mazeCtx = maze.getContext("2d")
 
-export const grid = []
-const stack = []
-let currentCell = null
 
 export class Grid {
   constructor(rows, cols) {
@@ -28,23 +21,21 @@ export class Grid {
     this.mazeWidth = 500
     this.mazeHeight = 500
     this.cellMargin = 1
-    this.numCells = this.rows * this.cols
-    this.cellSize = Math.floor(this.mazeWidth / this.numCells)
-    this.tileColor = "lightgray"
+    this.rowSize = Math.floor(this.mazeWidth / this.rows)
+    this.colSize = Math.floor(this.mazeHeight / this.cols)
+    this.tileColor = "gray"
     this.traverseColor = "blue"
     this.gridColor = "white"
     this.speed = 1
-    this.maze = document.querySelector("#maze")
-    this.mazeCtx = maze.getContext("2d")
     this.grid = []
     this.stack = []
   }
 
   constructMaze() {
-    console.log(this.grid)
+    console.log(this.rowSize)
     for (let i = 0; i < this.cols; i++) {
       for (let j = 0; j < this.rows; j++) {
-        const cell = new Cell(j, i)
+        const cell = new Cell(j, i, this.rowSize, this.colSize)
         cell.displayCell(this.tileColor)
         cell.displayWalls()
         this.grid.push(cell)
@@ -52,12 +43,10 @@ export class Grid {
     }
     for (let i = 0; i < this.grid.length; i++) {
       this.grid[i].getNeighbors(this.rows, this.cols, this.grid)
-      console.log(this.grid[i])
     }
-    console.log(this.grid)
   }
 
-  async traverse(previous) {
+  traverse(previous) {
     console.log(previous)
     if (!previous) {
       return
@@ -83,37 +72,23 @@ export class Grid {
         this.traverse(this.stack.pop())
       }
     // }, SPEED)
-    }, 10)
+    }, 100)
   }
 
-  // async getValidNeighbor(idx, cur) {
-  //   if (cur.neighbors.length === 0) {
-  //     return undefined
-  //   }
-  //   let validNeighbor = false
-  //   let next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
-  //   console.log(next)
-  //   while (!validNeighbor && cur.neighbors.length > 0) {
-  //     if (next.visited === false) {
-  //       validNeighbor = true
-  //       cur.neighbors.splice(cur.neighbors.indexOf(next), 1)
-  //       next.neighbors.splice(next.neighbors.indexOf(cur), 1)
-  //     }
-  //     else {
-  //       cur.neighbors.splice(cur.neighbors.indexOf(next), 1)
-  //       next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
-  //     }
-  //   }
-  //   return validNeighbor ? next : undefined
-  // }
+  reset() {
+    mazeCtx.fillStyle = BACKGROUND_COLOR
+    mazeCtx.fillRect(0, 0, MAZE_WIDTH, MAZE_WIDTH)
+  }
 }
 
 class Cell {
-  constructor(x, y) {
+  constructor(x, y, rowSize, colSize) {
     this.x = x
     this.y = y
-    this.xPosition = x * CELL_SIZE
-    this.yPosition = y * CELL_SIZE
+    this.xPosition = x * rowSize
+    this.yPosition = y * colSize
+    this.rowSize = rowSize
+    this.colSize = colSize
     this.top = true
     this.bottom = true
     this.left = true
@@ -124,37 +99,37 @@ class Cell {
 
   displayCell(color) {
     mazeCtx.fillStyle = color
-    mazeCtx.fillRect(this.xPosition, this.yPosition, CELL_SIZE, CELL_SIZE)
+    mazeCtx.fillRect(this.xPosition, this.yPosition, this.rowSize, this.colSize)
   }
 
   displayWalls() {
     mazeCtx.fillStyle = GRID_COLOR
+
     // top
-    mazeCtx.fillRect(this.xPosition, this.yPosition, 
-      CELL_SIZE, CELL_MARGIN)
+    mazeCtx.fillRect(this.xPosition, this.yPosition, this.rowSize, CELL_MARGIN)
     // bottom
-    mazeCtx.fillRect(this.xPosition - CELL_MARGIN, 
-      this.yPosition + CELL_SIZE - CELL_MARGIN, CELL_SIZE, CELL_MARGIN)
+    mazeCtx.fillRect(this.xPosition, this.yPosition + this.colSize - CELL_MARGIN, 
+      this.rowSize, CELL_MARGIN)
     // left
     mazeCtx.fillRect(this.xPosition, this.yPosition,
-      CELL_MARGIN, CELL_SIZE)
+      CELL_MARGIN, this.colSize)
     // right
-    mazeCtx.fillRect(this.xPosition + CELL_SIZE - CELL_MARGIN, this.yPosition,
-      CELL_MARGIN, CELL_SIZE)
+    mazeCtx.fillRect(this.xPosition + this.rowSize - CELL_MARGIN, this.yPosition,
+      CELL_MARGIN, this.colSize)
   }
 
   visit() {
     this.visited = true
     mazeCtx.fillStyle = "red"
     mazeCtx.fillRect(this.xPosition + CELL_MARGIN, this.yPosition + CELL_MARGIN, 
-      CELL_SIZE - CELL_MARGIN, CELL_SIZE - CELL_MARGIN)
+      this.rowSize - CELL_MARGIN, this.colSize - CELL_MARGIN)
   }
 
   changeCellColor(color) {
-    this.visited = true
+    // this.visited = true
     mazeCtx.fillStyle = color
     mazeCtx.fillRect(this.xPosition + CELL_MARGIN, this.yPosition + CELL_MARGIN, 
-      CELL_SIZE - CELL_MARGIN, CELL_SIZE - CELL_MARGIN)
+      this.rowSize - CELL_MARGIN, this.colSize - CELL_MARGIN)
   }
 
   getNeighbors(rows, cols, grid) {
@@ -213,19 +188,19 @@ class Cell {
     mazeCtx.fillStyle = TRAVERSE_COLOR
     if (side === "top") {
       mazeCtx.fillRect(tile.xPosition + CELL_MARGIN, tile.yPosition, 
-        CELL_SIZE - CELL_MARGIN, CELL_MARGIN)
+        this.rowSize - CELL_MARGIN, CELL_MARGIN)
     }
     else if (side === "bottom") {
-      mazeCtx.fillRect(tile.xPosition + CELL_MARGIN, tile.yPosition + CELL_SIZE + CELL_MARGIN, 
-        CELL_SIZE - CELL_MARGIN, CELL_MARGIN)
+      mazeCtx.fillRect(tile.xPosition + CELL_MARGIN, tile.yPosition + this.colSize- CELL_MARGIN, 
+        this.rowSize - CELL_MARGIN, CELL_MARGIN)
     }
     else if (side === "left") {
       mazeCtx.fillRect(tile.xPosition, tile.yPosition + CELL_MARGIN,
-         CELL_MARGIN, CELL_SIZE - CELL_MARGIN)
+         CELL_MARGIN, this.colSize - CELL_MARGIN)
     }
     else {
-      mazeCtx.fillRect(tile.xPosition + CELL_SIZE - CELL_MARGIN, tile.yPosition + CELL_MARGIN,
-        CELL_MARGIN, CELL_SIZE - CELL_MARGIN)
+      mazeCtx.fillRect(tile.xPosition + this.rowSize - CELL_MARGIN, tile.yPosition + CELL_MARGIN,
+        CELL_MARGIN, this.colSize - CELL_MARGIN)
     }
   }
 

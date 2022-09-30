@@ -4,25 +4,27 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 500px;
-  height: 500px;
+  height: 300px;
   font-size: 20px;
   border: 1px solid blue;
   visibility: hidden;
   opacity: 0;
-  /* transition: 0.5s; */
+  transition: 0.5s;
   z-index: 1;
 
   display: flex;
   flex-direction: column;
   gap: 20px;
   background-color: white;
+  border-radius: 10px;
 }
 
 .settings-menu-title {
-  height: 30px;
   text-align: center;
   padding-top: 20px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
+  font-size: 30px;
+  border-radius: 10px 10px 0 0 ;
 }
 
 .option {
@@ -32,12 +34,17 @@
   align-items: center;
   gap: 10px;
 }
+.option-text {
+  width: 125px;
+  display: flex;
+  justify-content: space-between;
+}
 
 .visible {
   top: 50%;
   visibility: visible;
   opacity: 1;
-  /* transition: 0.5s; */
+  transition: 0.5s;
 }
 
 .inactive {
@@ -47,7 +54,7 @@
 }
 
 .slider-container {
-  width: 75%;
+  width: 70%;
 }
 .slider {
   -webkit-appearance: none;
@@ -59,6 +66,7 @@
   transition: opacity 0.2s;
   border-radius: 12px;
   box-shadow: 0 1px 10px 1px black;
+  background-color: gray;
   /* background: linear-gradient(90deg, gray 40%, black 40%); */
 }
 .slider:hover {
@@ -69,14 +77,9 @@
   appearance: none;
   width: 25px;
   height: 25px;
-  background: white;
+  background: lightgray;
   border-radius: 50%;
   cursor: pointer;
-}
-.option-text {
-  width: 100px;
-  display: flex;
-  justify-content: space-between;
 }
 
 .value {
@@ -95,8 +98,11 @@ input[type=number] {
 }
 
 .submit {
-  font-size: 15px;
-  width: 60px;
+  font-size: 20px;
+  width: 100px;
   margin: auto;
+  background-color: #06283D;
+  color: white;
+  border-radius: 5px;
 }
 

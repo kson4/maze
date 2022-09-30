@@ -6,6 +6,11 @@
 
 .navbar {
   padding: 2%;
+  background-color: #06283D;
+  color: white;
+}
+.navbar-title {
+  font-size: 25px;
 }
 .navbar-list {
   display: flex;
@@ -18,4 +23,8 @@ ul {
 li {
   width: 200px;
   text-align: center;
+}
+
+.screen-container {
+  background-color: #DFF6FF;
 }
