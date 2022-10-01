@@ -1,9 +1,10 @@
 import { Grid } from "./setup-maze.js"
+import { simpleTraverse, intialize } from "./solve.js"
 
-// window.onload = function() {
-//   document.querySelector(".settings-menu").classList.add("visible")
-//   document.querySelector(".maze-container").classList.add("inactive")
-// };
+window.onload = function() {
+  // document.querySelector(".settings-menu").classList.add("visible")
+  // document.querySelector(".maze-container").classList.add("inactive")
+};
 
 document.querySelector("#settings-icon").addEventListener("click", openSettings)
 document.querySelector(".screen-container").addEventListener("click", closeSettings)
@@ -16,25 +17,7 @@ function closeSettings() {
   document.querySelector(".maze-container").classList.remove("inactive")
 }
 
-let mazeGrid
 
-//nav bar
-document.querySelector("#bfs").addEventListener("click", () => {
-  mazeGrid.dfs(mazeGrid.grid[0])
-})
-document.querySelector("#prims").addEventListener("click", () => {
-  const cell = mazeGrid.grid[Math.floor(Math.random() * mazeGrid.grid.length)]
-  mazeGrid.grid.splice(mazeGrid.grid.indexOf(cell), 1)
-  for (let i = 0; i < cell.neighbors.length; i++) {
-    mazeGrid.wallList.push([cell, cell.neighbors[i]])
-  }
-  cell.visit()
-  mazeGrid.prim()
-})
-document.querySelector("#generate").addEventListener("click", () => {
-  mazeGrid = new Grid(sliders[0].value, sliders[1].value)
-  mazeGrid.constructMaze()
-})
 
 // settings
 const sliders = document.querySelectorAll(".slider")
@@ -52,9 +35,42 @@ for (let i = 0; i < sliders.length; i++) {
   })
 }
 
+export let mazeGrid = new Grid(values[0].value, values[1].value)
+mazeGrid = new Grid(40, 35)
+mazeGrid.constructMaze()
+let startingPosition = mazeGrid.grid[0][0]
+
+
+//nav bar
+document.querySelector("#bfs").addEventListener("click", () => {
+  mazeGrid.dfs(mazeGrid.grid[0][0])
+  for (let i = 0; i < mazeGrid.grid.length; i++) {
+    for (let j = 0; j < mazeGrid.grid[0].length; j++) {
+      mazeGrid.grid[i][j].getConnected(mazeGrid.grid)
+    }
+  }
+})
+
+document.querySelector("#prims").addEventListener("click", () => {
+  const cell = mazeGrid.grid[Math.floor(Math.random() * mazeGrid.grid.length)]
+                            [Math.floor(Math.random() * mazeGrid.grid[0].length)]
+  // mazeGrid.grid.splice(mazeGrid.grid.indexOf(cell), 1)
+  for (let i = 0; i < cell.neighbors.length; i++) {
+    mazeGrid.wallList.push([cell, cell.neighbors[i]])
+  }
+  cell.visit()
+  mazeGrid.prim()
+  console.log(mazeGrid)
+})
+document.querySelector("#generate").addEventListener("click", () => {
+  intialize(startingPosition)
+  simpleTraverse()
+  // mazeGrid = new Grid(sliders[0].value, sliders[1].value)
+  // mazeGrid.constructMaze()
+})
+
 document.querySelector(".submit").addEventListener("click", createNewGrid)
 export function createNewGrid() {
-  mazeGrid.reset()
   mazeGrid = new Grid(values[0].value, values[1].value)
   mazeGrid.constructMaze()
   // mazeGrid.traverse(mazeGrid.grid[0])
@@ -63,5 +79,7 @@ export function createNewGrid() {
 }
 
 // mazeGrid = new Grid(values[0].value, values[1].value)
-mazeGrid = new Grid(30, 20)
-mazeGrid.constructMaze()
+// export let mazeGrid = new Grid(values[0].value, values[1].value)
+// mazeGrid = new Grid(5, 5)
+// mazeGrid.constructMaze()
+// console.log(mazeGrid)

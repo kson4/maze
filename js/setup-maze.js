@@ -12,13 +12,12 @@ const MAZE_HEIGHT = 1000
 const CELL_MARGIN = 1;
 maze.width = MAZE_WIDTH
 maze.height = MAZE_HEIGHT
-const mazeCtx = maze.getContext("2d")
+
+export const mazeCtx = maze.getContext("2d")
 mazeCtx.imageSmoothingEnabled = false;
 
 const numTraversals = document.querySelector(".num-traversal")
 numTraversals.textContent = "0"
-
-let counter = 0
 
 export class Grid {
   constructor(rows, cols) {
@@ -33,35 +32,45 @@ export class Grid {
     this.traverseColor = "green"
     this.gridColor = "#FFF"
     this.speed = 1
+
     this.grid = []
     this.stack = []
     this.wallList = []
+    this.connected = new Array(rows * cols)
   }
 
   constructMaze() {
-    for (let i = 0; i < this.cols; i++) {
-      for (let j = 0; j < this.rows; j++) {
-        const cell = new Cell(j, i, this.rowSize, this.colSize)
+    for (let i = 0; i < this.rows; i++) {
+      const row = []
+      for (let j = 0; j < this.cols; j++) {
+        const cell = new Cell(i, j, this.rowSize, this.colSize)
+        row.push(cell)
         cell.displayCell(this.tileColor)
         cell.displayWalls()
-        this.grid.push(cell)
+      }
+      this.grid.push(row)
+    }
+
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
+        this.grid[i][j].getNeighbors(this.rows, this.cols, this.grid)
       }
     }
-    for (let i = 0; i < this.grid.length; i++) {
-      this.grid[i].getNeighbors(this.rows, this.cols, this.grid)
-    }
+    console.log(this.grid)
   }
 
   dfs(previous) {
     numTraversals.textContent++
     if (!previous) {
+      // this.reset()
+      console.log(this.grid)
       return
     }
     let cur = previous
     
     cur.visit()
     cur.displayAvailableWalls()
-    let next = cur.getValidNeighbor(0, cur)
+    let next = cur.getValidNeighbor(0, cur, this.grid)
     
     setTimeout(() => {
       cur.changeCellColor(TRAVERSE_COLOR)
@@ -70,12 +79,14 @@ export class Grid {
           this.stack.push(cur)
         }
         cur.removeWall(next)
+        cur.getConnected(this.grid)
         this.dfs(next)
       }
       else {
         while (this.stack.length > 0 && this.stack[this.stack.length - 1].neighbors.length == 0) {
           this.stack.pop()
         }
+        cur.getConnected(this.grid)
         this.dfs(this.stack.pop())
       }
     }, SPEED)
@@ -91,6 +102,8 @@ export class Grid {
     let idx
     while (!foundValidCell) {
       if (this.wallList.length == 0) {
+        // this.reset()
+        console.log(this.grid)
         return
       }
       idx = Math.floor(Math.random() * this.wallList.length)
@@ -102,7 +115,6 @@ export class Grid {
       }
     }
     const cur = this.wallList[idx][0]
-
     for (let i = 0; i < cur.neighbors.length; i++) {
       if (cur.neighbors[i].visited) {
         this.wallList.push([cur, cur.neighbors[i]])
@@ -113,6 +125,9 @@ export class Grid {
     cur.visit()
     next.visit()
     cur.removeWall(next)
+
+    cur.getConnected(this.grid)
+    next.getConnected(this.grid)
     cur.displayAvailableWalls()
     next.displayAvailableWalls()
 
@@ -125,14 +140,19 @@ export class Grid {
     setTimeout(() => {
       cur.changeCellColor(TRAVERSE_COLOR)
       next.changeCellColor(TRAVERSE_COLOR)
+      // console.log(cur, next)
+      // cur.getConnected(this.grid)
       this.prim()
     }, 10)
   }
 
-  reset() {
-    mazeCtx.fillStyle = BACKGROUND_COLOR
-    mazeCtx.fillRect(0, 0, MAZE_WIDTH, MAZE_WIDTH)
-  }
+  // reset() {
+  //   for (let i = 0; i < this.grid.length; i++) {
+  //     for (let j = 0; j < this.grid[i].neighbors.length; j++) {
+  //       this.grid[i].neighbors[j].visited = false
+  //     }
+  //   }
+  // }
 }
 
 class Cell {
@@ -149,6 +169,8 @@ class Cell {
     this.right = true
     this.visited = false
     this.neighbors = []
+
+    this.connected = new Set()
   }
 
   displayCell(color) {
@@ -188,21 +210,22 @@ class Cell {
   }
 
   getNeighbors(rows, cols, grid) {
+    //r
     // top
-    if (this.y - 1 >= 0) {
-      this.neighbors.push(grid[this.x + (this.y - 1) * rows])
+    if (this.x - 1 >= 0) {
+      this.neighbors.push(grid[this.x - 1][this.y])
     }
     // bottom
-    if ((this.y + 1) < cols) {
-      this.neighbors.push(grid[this.x + (this.y + 1) * rows])
+    if ((this.x + 1) < rows) {
+      this.neighbors.push(grid[this.x + 1][this.y])
     }
     // left
-    if ((this.x - 1) >= 0) {
-      this.neighbors.push(grid[(this.x - 1) + (this.y) * rows])
+    if ((this.y - 1) >= 0) {
+      this.neighbors.push(grid[this.x][this.y - 1])
     }
     // right
-    if ((this.x + 1) < rows) {
-      this.neighbors.push(grid[(this.x + 1) + (this.y) * rows])
+    if ((this.y + 1) < cols) {
+      this.neighbors.push(grid[this.x][this.y + 1])
     }
   }
 
@@ -272,8 +295,7 @@ class Cell {
       mazeCtx.fillRect(this.xPosition + this.rowSize, this.yPosition, CELL_MARGIN, this.colSize)
     }
   }
-
-  getValidNeighbor(idx, cur) {
+  getValidNeighbor(idx, cur, grid) {
     if (cur.neighbors.length === 0) {
       return undefined
     }
@@ -290,6 +312,27 @@ class Cell {
         next = cur.neighbors[Math.floor(Math.random() * (cur.neighbors.length))]
       }
     }
-    return validNeighbor ? next : undefined
+    if (validNeighbor) {
+      return next
+    }
+    return undefined
+  }
+  getConnected(grid) {
+    if (!this.top) {
+      this.connected.add(grid[this.x][this.y - 1])
+    }
+    if (!this.bottom) {
+      this.connected.add(grid[this.x][this.y + 1])
+    }
+    if (!this.left) {
+      this.connected.add(grid[this.x - 1][this.y])
+    }
+    if (!this.right) {
+      this.connected.add(grid[this.x + 1][this.y])
+    }
   }
 }
+
+// export let mazeGrid = new Grid(5, 5)
+// // mazeGrid = new Grid(5, 5)
+// mazeGrid.constructMaze()
