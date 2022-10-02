@@ -12,6 +12,7 @@ const found = false
 export function initialize() {
   console.log(mazeGrid.grid)
   closed.clear()
+  open = []
   open.push([Math.sqrt(Math.pow(mazeGrid.rows, 2) + Math.pow(mazeGrid.cols, 2)), mazeGrid.grid[0][0]])
   mazeCtx.fillStyle = "red"
 }
