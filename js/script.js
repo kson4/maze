@@ -39,7 +39,15 @@ mazeGrid.constructMaze()
 
 //nav bar
 document.querySelector("#bfs").addEventListener("click", () => {
-  mazeGrid.dfs(mazeGrid.grid[0][0])
+  // mazeGrid.dfs(mazeGrid.grid[0][0])
+  // for (let i = 0; i < mazeGrid.grid.length; i++) {
+  //   for (let j = 0; j < mazeGrid.grid[0].length; j++) {
+  //     mazeGrid.grid[i][j].getConnected(mazeGrid.grid)
+  //   }
+  // }
+  mazeGrid.queue.push([mazeGrid.grid[0][0], mazeGrid.grid[0][1]])
+  mazeGrid.queue.push([mazeGrid.grid[0][0], mazeGrid.grid[1][0]])
+  mazeGrid.bfs(mazeGrid.queue, mazeGrid.grid)
   for (let i = 0; i < mazeGrid.grid.length; i++) {
     for (let j = 0; j < mazeGrid.grid[0].length; j++) {
       mazeGrid.grid[i][j].getConnected(mazeGrid.grid)

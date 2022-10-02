@@ -35,6 +35,7 @@ export class Grid {
 
     this.grid = []
     this.stack = []
+    this.queue = []
     this.wallList = []
     this.connected = new Array(rows * cols)
   }
@@ -92,6 +93,55 @@ export class Grid {
     }, SPEED)
   }
 
+  bfs(queue, grid) {
+    console.log(queue)
+    if (queue.length <= 0) {
+      console.log(this.grid)
+      return
+    }
+    console.log("BFS")
+    numTraversals.textContent++
+    const newQueue = []
+
+    visit(queue)
+    function visit(queue) {
+      const idx = Math.floor(Math.random() * queue.length)
+      const cur = queue[idx][0]
+      const next = queue[idx][1]
+      queue.splice(idx, 1)
+      console.log(cur, next)
+
+      if (!next.visited) {
+        console.log(cur, next)
+        cur.visit()
+        next.visit()
+        cur.removeWall(next)
+        cur.displayAvailableWalls()
+        next.displayAvailableWalls()
+        cur.getConnected(grid)
+        next.getConnected(grid)
+        for (let i = 0; i < next.neighbors.length; i++) {
+          console.log("PUSHING IN: ", next.neighbors[i], next.neighbors[i].visited)
+          if (!next.neighbors[i].visited) {
+            newQueue.push([next, next.neighbors[i]])
+          }
+        }
+      }
+      
+      console.log(newQueue)
+      setTimeout(() => {
+        cur.changeCellColor(TRAVERSE_COLOR)
+        next.changeCellColor(TRAVERSE_COLOR)
+        if (queue.length > 0) {
+          visit(queue)
+        }
+      }, SPEED)
+    }
+    setTimeout(() => {
+      this.bfs(newQueue, grid)
+    }, SPEED * 20)
+  }
+
   prim() {
     numTraversals.textContent++
     if (this.wallList.length == 0) {
@@ -102,7 +152,6 @@ export class Grid {
     let idx
     while (!foundValidCell) {
       if (this.wallList.length == 0) {
-        // this.reset()
         console.log(this.grid)
         return
       }
@@ -140,8 +189,6 @@ export class Grid {
     setTimeout(() => {
       cur.changeCellColor(TRAVERSE_COLOR)
       next.changeCellColor(TRAVERSE_COLOR)
-      // console.log(cur, next)
-      // cur.getConnected(this.grid)
       this.prim()
     }, 10)
   }
