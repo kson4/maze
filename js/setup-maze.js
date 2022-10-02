@@ -146,13 +146,15 @@ export class Grid {
     }, 10)
   }
 
-  // reset() {
-  //   for (let i = 0; i < this.grid.length; i++) {
-  //     for (let j = 0; j < this.grid[i].neighbors.length; j++) {
-  //       this.grid[i].neighbors[j].visited = false
-  //     }
-  //   }
-  // }
+  reset() {
+    // for (let i = 0; i < this.grid.length; i++) {
+    //   for (let j = 0; j < this.grid[i].neighbors.length; j++) {
+    //     this.grid[i].neighbors[j].visited = false
+    //   }
+    // }
+    mazeCtx.fillStyle = "white"
+    mazeCtx.fillRect(0, 0, MAZE_WIDTH, MAZE_HEIGHT)
+  }
 }
 
 class Cell {

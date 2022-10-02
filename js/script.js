@@ -1,5 +1,5 @@
 import { Grid } from "./setup-maze.js"
-import { simpleTraverse, intialize } from "./solve.js"
+import { simpleTraverse, initialize } from "./solve.js"
 
 window.onload = function() {
   // document.querySelector(".settings-menu").classList.add("visible")
@@ -16,8 +16,6 @@ function closeSettings() {
   document.querySelector(".settings-menu").classList.remove("visible")
   document.querySelector(".maze-container").classList.remove("inactive")
 }
-
-
 
 // settings
 const sliders = document.querySelectorAll(".slider")
@@ -36,10 +34,8 @@ for (let i = 0; i < sliders.length; i++) {
 }
 
 export let mazeGrid = new Grid(values[0].value, values[1].value)
-mazeGrid = new Grid(40, 35)
+mazeGrid = new Grid(6, 6)
 mazeGrid.constructMaze()
-let startingPosition = mazeGrid.grid[0][0]
-
 
 //nav bar
 document.querySelector("#bfs").addEventListener("click", () => {
@@ -63,23 +59,15 @@ document.querySelector("#prims").addEventListener("click", () => {
   console.log(mazeGrid)
 })
 document.querySelector("#generate").addEventListener("click", () => {
-  intialize(startingPosition)
+  initialize()
   simpleTraverse()
-  // mazeGrid = new Grid(sliders[0].value, sliders[1].value)
-  // mazeGrid.constructMaze()
 })
 
 document.querySelector(".submit").addEventListener("click", createNewGrid)
 export function createNewGrid() {
+  mazeGrid.reset()
   mazeGrid = new Grid(values[0].value, values[1].value)
   mazeGrid.constructMaze()
-  // mazeGrid.traverse(mazeGrid.grid[0])
   console.log(mazeGrid)
   closeSettings()
 }
-
-// mazeGrid = new Grid(values[0].value, values[1].value)
-// export let mazeGrid = new Grid(values[0].value, values[1].value)
-// mazeGrid = new Grid(5, 5)
-// mazeGrid.constructMaze()
-// console.log(mazeGrid)
