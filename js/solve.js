@@ -21,7 +21,7 @@ export function simpleTraverse() {
   let cur = open.pop()
   console.log(cur)
   console.log(cur[0], cur[1])
-  mazeCtx.fillText(cur[0].toFixed(1), cur[1].xPosition + 10, cur[1].yPosition + 10)
+  // mazeCtx.fillText(cur[0].toFixed(1), cur[1].xPosition + 10, cur[1].yPosition + 10)
   console.log(cur[0])
   console.log("-------------------------------------------------")
 

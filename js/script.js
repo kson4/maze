@@ -38,13 +38,15 @@ mazeGrid = new Grid(6, 6)
 mazeGrid.constructMaze()
 
 //nav bar
+document.querySelector("#dfs").addEventListener("click", () => {
+  mazeGrid.dfs(mazeGrid.grid[0][0])
+  for (let i = 0; i < mazeGrid.grid.length; i++) {
+    for (let j = 0; j < mazeGrid.grid[0].length; j++) {
+      mazeGrid.grid[i][j].getConnected(mazeGrid.grid)
+    }
+  }
+})
 document.querySelector("#bfs").addEventListener("click", () => {
-  // mazeGrid.dfs(mazeGrid.grid[0][0])
-  // for (let i = 0; i < mazeGrid.grid.length; i++) {
-  //   for (let j = 0; j < mazeGrid.grid[0].length; j++) {
-  //     mazeGrid.grid[i][j].getConnected(mazeGrid.grid)
-  //   }
-  // }
   mazeGrid.queue.push([mazeGrid.grid[0][0], mazeGrid.grid[0][1]])
   mazeGrid.queue.push([mazeGrid.grid[0][0], mazeGrid.grid[1][0]])
   mazeGrid.bfs(mazeGrid.queue, mazeGrid.grid)
@@ -58,7 +60,6 @@ document.querySelector("#bfs").addEventListener("click", () => {
 document.querySelector("#prims").addEventListener("click", () => {
   const cell = mazeGrid.grid[Math.floor(Math.random() * mazeGrid.grid.length)]
                             [Math.floor(Math.random() * mazeGrid.grid[0].length)]
-  // mazeGrid.grid.splice(mazeGrid.grid.indexOf(cell), 1)
   for (let i = 0; i < cell.neighbors.length; i++) {
     mazeGrid.wallList.push([cell, cell.neighbors[i]])
   }
@@ -66,7 +67,7 @@ document.querySelector("#prims").addEventListener("click", () => {
   mazeGrid.prim()
   console.log(mazeGrid)
 })
-document.querySelector("#generate").addEventListener("click", () => {
+document.querySelector("#solve").addEventListener("click", () => {
   initialize()
   simpleTraverse()
 })

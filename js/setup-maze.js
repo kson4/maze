@@ -65,6 +65,7 @@ export class Grid {
     if (!previous) {
       // this.reset()
       console.log(this.grid)
+      console.log("DFS DONE")
       return
     }
     let cur = previous
@@ -84,18 +85,18 @@ export class Grid {
         this.dfs(next)
       }
       else {
-        while (this.stack.length > 0 && this.stack[this.stack.length - 1].neighbors.length == 0) {
-          this.stack.pop()
-        }
+        // while (this.stack.length > 0 && this.stack[this.stack.length - 1].neighbors.length == 0) {
+        //   this.stack.pop()
+        // }
         cur.getConnected(this.grid)
         this.dfs(this.stack.pop())
       }
-    }, SPEED)
+    }, 1)
   }
 
   bfs(queue, grid) {
-    console.log(queue)
     if (queue.length <= 0) {
+      console.log("FINISHED :::: ", queue)
       console.log(this.grid)
       return
     }
@@ -109,10 +110,7 @@ export class Grid {
       const cur = queue[idx][0]
       const next = queue[idx][1]
       queue.splice(idx, 1)
-      console.log(cur, next)
-
       if (!next.visited) {
-        console.log(cur, next)
         cur.visit()
         next.visit()
         cur.removeWall(next)
@@ -121,14 +119,11 @@ export class Grid {
         cur.getConnected(grid)
         next.getConnected(grid)
         for (let i = 0; i < next.neighbors.length; i++) {
-          console.log("PUSHING IN: ", next.neighbors[i], next.neighbors[i].visited)
           if (!next.neighbors[i].visited) {
             newQueue.push([next, next.neighbors[i]])
           }
         }
       }
-      
-      console.log(newQueue)
       setTimeout(() => {
         cur.changeCellColor(TRAVERSE_COLOR)
         next.changeCellColor(TRAVERSE_COLOR)
