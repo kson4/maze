@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maze Algorithm</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/maze.css" />
+    <link rel="stylesheet" href="./css/settings-menu.css" />
+    <link rel="stylesheet" href="./css/stats.css" />
+    <script
+      src="https://kit.fontawesome.com/661ac17a3d.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/tinyqueue@2.0.0/tinyqueue.min.js"></script>
+  </head>
+  <body>
+    <div class="navbar">
+      <ul class="navbar-list">
+        <li class="navbar-title">Pathfinding - Maze</li>
+        <li><button id="dfs">DFS</button></li>
+        <li><button id="bfs">BFS</button></li>
+        <li><button id="prims">Prim's</button></li>
+        <li><button id="solve">Solve</button></li>
+        <li><i id="settings-icon" class="fa-solid fa-sliders fa-xl"></i></li>
+
+        <!-- <li><button id="start">START!</button></li>
+       -->
+      </ul>
+    </div>
+    <div class="screen-container">
+      <div class="stats">
+        <p>Number of Iterations: <span class="num-traversal"></span></p>
+      </div>
+      <div class="maze-container">
+        <canvas id="maze"></canvas>
+      </div>
+    </div>
+    <div class="settings-menu">
+      <div class="settings-menu-title">Settings</div>
+      <div class="option">
+        <div class="option-text">
+          <span>Rows: </span>
+          <input type="number" class="value" value="30" />
+        </div>
+        <div class="slider-container">
+          <input
+            id="rows-slider"
+            class="slider"
+            type="range"
+            ,
+            min="10"
+            ,
+            max="100"
+            ,
+            value="30"
+          />
+        </div>
+      </div>
+
+      <div class="option">
+        <div class="option-text">
+          <span>Columns: </span>
+          <input type="number" class="value" value="20" />
+        </div>
+        <div class="slider-container">
+          <input
+            id="cols-slider"
+            class="slider"
+            type="range"
+            ,
+            min="10"
+            ,
+            max="100"
+            ,
+            value="20"
+          />
+        </div>
+      </div>
+      <input type="submit" class="submit" />
+    </div>
+    <script src="./js/script.js" type="module"></script>
+    <script src="./js/setup-maze.js" type="module"></script>
+    <!-- <script src="./js/solve.js" type="module"></script> -->
+  </body>
+</html>
